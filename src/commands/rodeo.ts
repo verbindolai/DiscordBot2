@@ -1,14 +1,16 @@
 import {Client, GuildMember, Message, Snowflake} from 'discord.js';
-import {command} from '../command';
+import { commandInterface } from '../commandInterface';
+import { executor } from './executor';
 
-class rodeo implements command{
+class rodeo implements commandInterface{
+    ex: executor;
     name: string = "rodeo";
-    execute(msg: Message, args: string[], client : Client): void {
+    constructor() {
+        this.ex = new executor(this.name, this.executeFunc, this.validateFunc);
+    }
 
-        if (!this.validation(msg)){
-            return;
-        }
 
+    executeFunc(msg: Message, args: string[], client : Client): void {
         let channelIDs : Snowflake[] = [];
         
         msg.guild?.channels.cache.each(channel => {
@@ -41,7 +43,7 @@ class rodeo implements command{
         }, 2500)
 
     }
-    validation(msg : Message) : boolean{
+    validateFunc(msg : Message) : boolean{
         if(msg?.member?.hasPermission('ADMINISTRATOR')){
             return true;
         }
@@ -50,4 +52,4 @@ class rodeo implements command{
     }
 }
 
-module.exports = new rodeo;
+module.exports = new rodeo().ex;

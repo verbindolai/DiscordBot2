@@ -1,15 +1,17 @@
 import {Client, GuildMember, Message, VoiceConnection} from 'discord.js';
-import {command} from '../command';
 import ytdl from 'ytdl-core';
+import { commandInterface } from '../commandInterface';
+import { executor } from './executor';
 
-class christmas implements command{
-    name: string = "christmas"; // !jutsu @Robin
-    execute(msg: Message, args: string[], client : Client): void {
+class christmas implements commandInterface{
+    name: string = "christmas";
+    ex: executor;
 
-        if (!this.validation(msg)){
-            return;
-        }
-        
+    constructor(){
+        this.ex = new executor(this.name, this.executeFunc, this.validateFunc)
+    }
+
+    executeFunc(msg: Message, args: string[], client : Client): void {
 
         let member : GuildMember | null = msg.member;
         let botMember : GuildMember | undefined;
@@ -37,9 +39,9 @@ class christmas implements command{
         });  
         
     }
-    validation(msg : Message) : boolean{
+    validateFunc(msg : Message) : boolean{
         return true;
     }
 }
 
-module.exports = new christmas;
+module.exports = new christmas().ex;

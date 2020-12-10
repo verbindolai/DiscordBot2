@@ -1,14 +1,12 @@
 
 import discord, { Channel, Client, Collection, Guild, GuildMember, Message } from 'discord.js';
 import fs from 'fs';
-import { command } from './command';
-
-
+import { executor } from './commands/executor';
 export class Bot{
 
     private client : Client;
     private config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-    private commands: discord.Collection<string, command>;
+    private commands: discord.Collection<string, executor>;
 
     constructor () {
         this.client = new discord.Client;
@@ -23,7 +21,7 @@ export class Bot{
         const commandFiles = fs.readdirSync('src/commands').filter(file => file.endsWith('.ts') && file !== 'executor.ts');
         for (const file of commandFiles) {
             const fileWithoutTS = file.replace(".ts","");
-            let command : command = require(`./commands/${fileWithoutTS}`);
+            let command : executor = require(`./commands/${fileWithoutTS}`);
             this.commands.set(command.name, command);
         }  
         console.log("Active Commands: \n")
@@ -54,11 +52,6 @@ export class Bot{
     */
     public onMemberUpdate() : void {
         this.client.on('guildMemberUpdate', (oldMember, newMember) => {
-            if(oldMember.roles.cache.find(r => r.name === "ProudToBePride")) {
-                if (oldMember.nickname !== null){
-                    newMember.setNickname(oldMember.nickname);
-                }
-            }
         })
     }
 

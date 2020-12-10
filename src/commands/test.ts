@@ -1,19 +1,21 @@
 import {Client, Message} from 'discord.js';
-import {command} from '../command';
 
-class test implements command{
+import { commandInterface } from '../commandInterface';
+import { executor } from './executor';
+
+class test implements commandInterface{
     name: string = "test";
-    execute(msg: Message, args: string[], client : Client): void {
+    ex: executor;
 
-        if (!this.validation(msg)){
-            return;
-        }
-
+    constructor(){
+        this.ex = new executor(this.name, this.executeFunc, this.validateFunc)
+    }
+    executeFunc(msg: Message, args: string[], client : Client): void {
         msg.channel.send("Test erfolgreich.");
     }
-    validation(msg : Message) : boolean{
+    validateFunc(msg : Message) : boolean{
         return true;
     }
 }
 
-module.exports = new test;
+module.exports = new test().ex;
