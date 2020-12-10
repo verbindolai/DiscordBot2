@@ -1,4 +1,4 @@
-import {executor, ExecuteFunction, ValidateFunction} from "./executor";
+import {executor, ExecuteFunction, ValidateFunction} from "./commands/executor";
 
 export interface commandInterface {
     ex : executor
