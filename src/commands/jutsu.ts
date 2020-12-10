@@ -1,13 +1,15 @@
 import {Client, GuildMember, Message} from 'discord.js';
-import {command} from '../command';
+import { commandInterface } from '../commandInterface';
+import { executor } from './executor';
 
-class jutsu implements command{
-    name: string = "jutsu"; // !jutsu @Robin
-    execute(msg: Message, args: string[], client : Client): void {
-        if(!this.validation(msg)){
-            return;
-        }
+class jutsu implements commandInterface{
+    name: string = "jutsu";
+    ex: executor;
 
+    constructor(){
+        this.ex = new executor(this.name,this.executeFunc, this.validateFunc);
+    }
+    executeFunc(msg: Message, args: string[], client : Client): void {
         let member : GuildMember | null = msg.member;
         let targetMember : GuildMember | undefined = msg.mentions.members?.first();
 
@@ -18,9 +20,8 @@ class jutsu implements command{
             targetMember.voice.setChannel(memberChannel);
         } 
     }
-    validation(msg : Message) : boolean{
+    validateFunc(msg : Message) : boolean{
         return true;
     }
 }
-
-module.exports = new jutsu;
+module.exports = new jutsu().ex;

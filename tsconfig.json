@@ -69,7 +69,7 @@
     "watch": true,
     "sourceMap": true,
     "outDir": "build"
-  
+
   },
 
   "exclude": [
