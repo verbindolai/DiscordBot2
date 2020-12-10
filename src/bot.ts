@@ -20,7 +20,7 @@ export class Bot{
     Adds all Command-Instances from the Command-Classes in the "commands"-Directory to the Command-Map
     */
     private addComms () : void {
-        const commandFiles = fs.readdirSync('src/commands').filter(file => file.endsWith('.ts') && file !== 'index.ts');
+        const commandFiles = fs.readdirSync('src/commands').filter(file => file.endsWith('.ts') && file !== 'command2.ts');
         for (const file of commandFiles) {
             const fileWithoutTS = file.replace(".ts","");
             let command : command = require(`./commands/${fileWithoutTS}`);

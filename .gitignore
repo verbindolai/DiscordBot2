@@ -2,3 +2,4 @@ build
 config.json
 **/config.json
 /node_modules
+/.idea
