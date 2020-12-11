@@ -8,10 +8,8 @@ const app = express();
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const secret : string = config.gitSecret;
 const sigHeaderName = 'x-hub-signature-256';
-let test;
 
 app.use(bodyParser.json());
-
 
 app.post('/' ,function(request, response){
 
@@ -33,6 +31,9 @@ app.post('/' ,function(request, response){
 
     // compare the signature against the one in the request
     if (signature !== expectedSignature) {
+        response.status(500).send({
+            message: 'Invalid signature.'
+        });
         throw new Error("Invalid signature.");
     }
 
