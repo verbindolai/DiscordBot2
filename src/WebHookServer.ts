@@ -2,6 +2,8 @@ import express, {Express, Request, Response} from 'express';
 import * as bodyParser from 'body-parser';
 import crypto from "crypto";
 import fs from "fs";
+import * as child_process from 'child_process';
+import {exec} from "child_process";
 
 class WebHookServer {
      app : Express;
@@ -58,6 +60,14 @@ class WebHookServer {
      action(request: Request, response : Response) : void {
          console.log(request.body)
          console.log(request.headers)
+
+         let data = JSON.parse(request.body);
+
+         if (data.repository.name === "DiscordBot2"){
+             if(data.ref === "refs/heads/WebHookServer2"){
+                 exec('echo "Test"');
+             }
+         }
      }
 
 }
