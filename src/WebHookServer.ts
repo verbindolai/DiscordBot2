@@ -6,7 +6,7 @@ import fs from "fs";
 
 const app = express();
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-const secret = config.gitSecret;
+const secret : string = config.gitSecret;
 const sigHeaderName = 'x-hub-signature-256';
 
 
