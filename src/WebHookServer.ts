@@ -10,9 +10,9 @@ const SECRET = config.gitSecret;
 
 http
     .createServer((req, res) => {
-        console.log("Server Created.")
+        console.log("Request retrieved.")
         req.on('data', chunk => {
-            console.log("Request retrieved.")
+            console.log("Incoming Message...")
             const signature = `sha1=${crypto
                 .createHmac('sha1', SECRET)
                 .update(chunk)
