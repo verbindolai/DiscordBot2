@@ -9,7 +9,7 @@ class WebHookServer {
      app : Express;
      secret : string;
      sigHeaderName : string;
-     defaultBranch: string = "Developer";
+     defaultBranch: string = "WebHookServer2";
 
      constructor() {
          this.app = express();
