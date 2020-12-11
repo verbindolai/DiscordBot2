@@ -33,7 +33,7 @@ export class Bot{
     Logs the Bot with the Token in and starts the Event-Listening / Evént-Handling
     */
     public start (): void {
-        this.client.login(this.config.token).then(r => {}).catch(c => {});
+        this.client.login(this.config.token).then(r => {});
         this.onReady();
         this.onMemberUpdate();
         this.onMessage();
