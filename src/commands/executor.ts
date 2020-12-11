@@ -17,6 +17,5 @@ export class executor {
        }
        this.funcExecute(msg,args,client);
     }
-
 }
 
