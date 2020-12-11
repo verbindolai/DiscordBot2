@@ -7,9 +7,9 @@ class jutsu implements commandInterface{
     ex: executor;
 
     constructor(){
-        this.ex = new executor(this.name,this.executeFunc, this.validateFunc);
+        this.ex = new executor(this.executeFunc, this.validateFunc);
     }
-    executeFunc(msg: Message, args: string[], client : Client): void {
+    private executeFunc(msg: Message, args: string[], client : Client): void {
         let member : GuildMember | null = msg.member;
         let targetMember : GuildMember | undefined = msg.mentions.members?.first();
 
@@ -17,11 +17,13 @@ class jutsu implements commandInterface{
             msg.channel.send('変わり身の術!');
             let memberChannel = member?.voice.channel;
             member?.voice.setChannel(targetMember?.voice.channel);
-            targetMember.voice.setChannel(memberChannel);
+            targetMember.voice.setChannel(memberChannel)
+                .then(r => {})
+                .catch(c => {});
         } 
     }
     validateFunc(msg : Message) : boolean{
         return true;
     }
 }
-module.exports = new jutsu().ex;
+module.exports = new jutsu();

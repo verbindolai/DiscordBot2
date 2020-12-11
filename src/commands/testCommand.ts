@@ -8,18 +8,16 @@ export class testCommand implements commandInterface {
     name: string = "ballern"
 
     constructor() {
-        this.ex = new executor(this.name, this.executeFunc, this.validateFunc);
+        this.ex = new executor(this.executeFunc, this.validateFunc);
     }
-    executeFunc(msg: Message, args: string[], client: Client): void{
-    
+    private executeFunc(msg: Message, args: string[], client: Client): void{
         console.log(msg.guild?.members);
-
     }
     validateFunc(msg: Message): boolean{
         return true;
     }
 }
 
-module.exports = new testCommand().ex
+module.exports = new testCommand();
 
 

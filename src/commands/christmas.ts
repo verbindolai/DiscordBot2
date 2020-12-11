@@ -8,10 +8,10 @@ class christmas implements commandInterface{
     ex: executor;
 
     constructor(){
-        this.ex = new executor(this.name, this.executeFunc, this.validateFunc)
+        this.ex = new executor(this.executeFunc, this.validateFunc)
     }
 
-    executeFunc(msg: Message, args: string[], client : Client): void {
+    private executeFunc(msg: Message, args: string[], client : Client): void {
 
         let member : GuildMember | null = msg.member;
         let botMember : GuildMember | undefined;
@@ -44,4 +44,4 @@ class christmas implements commandInterface{
     }
 }
 
-module.exports = new christmas().ex;
+module.exports = new christmas();
