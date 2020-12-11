@@ -28,7 +28,7 @@ jobs:
         with: 
           node-version: 12
       - name: Install Typescript
-        run: npm install -g typescript
+        run: npm install typescript
       - name: Install Dependencies 
         run: npm ci
       - name: Typescript compiler
