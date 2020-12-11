@@ -11,7 +11,6 @@ export class executor {
         this.funcValidate = funcValid;
         this.funcExecute = funcEx;
     }
-
     execute(msg: Message, args: string[], client : Client) : void{
        if(!this.funcValidate(msg)){
            return;
