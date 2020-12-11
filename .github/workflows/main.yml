@@ -29,8 +29,8 @@ jobs:
           node-version: 12
       - name: Install Dependencies 
         run: npm ci
-      - name: Typescript Transpile
-        run: tsc  
+      - name: Typescript compiler
+        uses: iCrawl/action-tsc@v1
       
       # Runs a single command using the runners shell
       - name: Run a one-line script
