@@ -9,3 +9,4 @@ app.post('/', function(request, response){
 });
 
 app.listen(7021);
+console.log("Listening on 7021...")
