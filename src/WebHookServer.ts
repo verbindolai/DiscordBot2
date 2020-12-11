@@ -43,7 +43,7 @@ class WebHookServer {
      }
 
      validateSignature(request: Request, response : Response) : boolean {
-         // calculate the signature
+         //Get Signature from Secret
          const expectedSignature = "sha256=" +
              crypto.createHmac("sha256", this.secret)
                  .update(JSON.stringify(request.body))
