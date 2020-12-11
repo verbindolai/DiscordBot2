@@ -11,11 +11,10 @@ class ehre implements commandInterface{
         this.ex = new executor(this.executeFunc, this.validateFunc)
     }
     private executeFunc(msg: Message, args: string[], client : Client): void {
-        msg.channel.send("Du hast keine Ehre.");
+        msg.channel.send("TEST!!!11233.");
     }
     validateFunc(msg : Message) : boolean{
         return true;
     }
 }
-let test;
 module.exports = new ehre();
