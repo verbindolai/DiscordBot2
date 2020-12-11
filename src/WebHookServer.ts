@@ -3,8 +3,7 @@ import crypto from 'crypto';
 import { exec } from 'child_process';
 import fs from "fs";
 
-
-
+let test;
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const SECRET = config.gitSecret;
 
