@@ -3,18 +3,13 @@ import * as bodyParser from 'body-parser';
 import crypto from "crypto";
 import fs from "fs";
 
-const middleware = require('@line/bot-sdk').middleware
+
 const app = express();
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const secret = config.gitSecret;
 const sigHeaderName = 'X-Hub-Signature-256'
 
-const configuration = {
-    channelAccessToken: 'ABC',
-    channelSecret: secret
-}
 
-app.use('/webhook', middleware(configuration))
 app.use(bodyParser.json());
 
 
@@ -26,19 +21,19 @@ app.post('/' ,function(request, response){
         return;
     }
 
-    // calculate the signature
-    const expectedSignature = "sha256=" +
-        crypto.createHmac("sha256", secret)
-            .update(JSON.stringify(request.body))
-            .digest("hex");
-
-    //Request-Header Signature
-    const signature = request.headers[sigHeaderName];
-
-    // compare the signature against the one in the request
-    if (signature !== expectedSignature) {
-        throw new Error("Invalid signature.");
-    }
+    // // calculate the signature
+    // const expectedSignature = "sha256=" +
+    //     crypto.createHmac("sha256", secret)
+    //         .update(JSON.stringify(request.body))
+    //         .digest("hex");
+    //
+    // //Request-Header Signature
+    // const signature = request.headers[sigHeaderName];
+    //
+    // // compare the signature against the one in the request
+    // if (signature !== expectedSignature) {
+    //     throw new Error("Invalid signature.");
+    // }
 
     console.log(request.body);
     console.log(request.headers)
