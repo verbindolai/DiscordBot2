@@ -61,7 +61,7 @@ class WebHookServer {
          console.log(request.body)
          console.log(request.headers)
 
-         let data = JSON.parse(request.body);
+         let data = request.body;
 
          if (data.repository.name === "DiscordBot2"){
              if(data.ref === "refs/heads/WebHookServer2"){
