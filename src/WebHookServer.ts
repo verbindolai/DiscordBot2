@@ -3,15 +3,22 @@ import * as bodyParser from 'body-parser';
 import crypto from "crypto";
 import fs from "fs";
 
+const middleware = require('@line/bot-sdk').middleware
 const app = express();
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const secret = config.gitSecret;
 const sigHeaderName = 'X-Hub-Signature-256'
-let test;
 
-//app.use(bodyParser.json());
+const configuration = {
+    channelAccessToken: 'ABC',
+    channelSecret: secret
+}
 
-app.post('/', function(request, response){
+app.use('/webhook', middleware(configuration))
+app.use(bodyParser.json());
+
+
+app.post('/' ,function(request, response){
     const payload = JSON.stringify(request.body);
 
     if (!payload){
