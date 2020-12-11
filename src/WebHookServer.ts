@@ -10,7 +10,9 @@ const SECRET = config.gitSecret;
 
 http
     .createServer((req, res) => {
+        console.log("Server Created.")
         req.on('data', chunk => {
+            console.log("Request retrieved.")
             const signature = `sha1=${crypto
                 .createHmac('sha1', SECRET)
                 .update(chunk)
@@ -30,3 +32,4 @@ http
         res.end();
     })
     .listen(7021);
+console.log("Listening on Port 7021...")
