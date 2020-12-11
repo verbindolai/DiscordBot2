@@ -9,6 +9,7 @@ class WebHookServer {
      app : Express;
      secret : string;
      sigHeaderName : string;
+     defaultBranch: string = "Developer";
 
      constructor() {
          this.app = express();
@@ -63,9 +64,16 @@ class WebHookServer {
 
          let data = request.body;
          if (data.repository.name === "DiscordBot2"){
-             if(data.ref === "refs/heads/WebHookServer2"){
+             if(data.ref === "refs/heads/" + this.defaultBranch){
                  console.log("Executing Script: ")
-                 exec('echo "Test"');
+                 exec('echo "test"', (err, stdout, stderr) => {
+                     if (err) {
+                         console.log(err);
+                         return;
+                     }
+                     console.log(`stdout: ${stdout}`);
+                     console.log(`stderr: ${stderr}`);
+                 });
              }
          }
      }
