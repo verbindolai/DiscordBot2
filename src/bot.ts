@@ -2,11 +2,12 @@
 import discord, { Channel, Client, Collection, Guild, GuildMember, Message } from 'discord.js';
 import fs from 'fs';
 import { executor } from './commands/executor';
+import {commandInterface} from "./commandInterface";
 export class Bot{
 
     private client : Client;
     private config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-    private commands: discord.Collection<string, executor>;
+    private commands: discord.Collection<string, commandInterface>;
 
     constructor () {
         this.client = new discord.Client;
@@ -21,7 +22,7 @@ export class Bot{
         const commandFiles = fs.readdirSync('src/commands').filter(file => file.endsWith('.ts') && file !== 'executor.ts');
         for (const file of commandFiles) {
             const fileWithoutTS = file.replace(".ts","");
-            let command : executor = require(`./commands/${fileWithoutTS}`);
+            let command : commandInterface = require(`./commands/${fileWithoutTS}`);
             this.commands.set(command.name, command);
         }  
         console.log("Active Commands: \n")
@@ -32,7 +33,7 @@ export class Bot{
     Logs the Bot with the Token in and starts the Event-Listening / Evént-Handling
     */
     public start (): void {
-        this.client.login(this.config.token);
+        this.client.login(this.config.token).then(r => {}).catch(c => {});
         this.onReady();
         this.onMemberUpdate();
         this.onMessage();
@@ -74,12 +75,11 @@ export class Bot{
                 }
 
                 try {
-                   
-                    this.commands.get(command)?.execute(msg, args, this.client);
+                    this.commands.get(command)?.ex.execute(msg, args, this.client);
                       
                 } catch (error) {
                     console.error(error);
-                    msg.reply('there was an error trying to execute that command!');
+                    msg.reply('there was an error trying to execute that command!').then(r => {}).catch(c => {});
                 }
                 
             }

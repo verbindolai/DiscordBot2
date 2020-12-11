@@ -1,15 +1,13 @@
 import {Client, Message} from "discord.js";
 
-export type ValidateFunction = (msg: Message) => boolean
-export type ExecuteFunction = (msg: Message, args: string[], client : Client) => void
+export type ValidateFunction = (msg: Message) => boolean;
+export type ExecuteFunction = (msg: Message, args: string[], client : Client) => void;
 
 export class executor {
-    name : string
     funcExecute : ExecuteFunction;
     funcValidate : ValidateFunction;
 
-    constructor(name : string, funcEx : ExecuteFunction, funcValid : ValidateFunction) {
-        this.name = name;
+    constructor(funcEx : ExecuteFunction, funcValid : ValidateFunction) {
         this.funcValidate = funcValid;
         this.funcExecute = funcEx;
     }
@@ -20,5 +18,6 @@ export class executor {
        }
        this.funcExecute(msg,args,client);
     }
+
 }
 

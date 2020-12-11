@@ -6,11 +6,11 @@ class rodeo implements commandInterface{
     ex: executor;
     name: string = "rodeo";
     constructor() {
-        this.ex = new executor(this.name, this.executeFunc, this.validateFunc);
+        this.ex = new executor(this.executeFunc, this.validateFunc);
     }
 
 
-    executeFunc(msg: Message, args: string[], client : Client): void {
+    private executeFunc(msg: Message, args: string[], client : Client): void {
         let channelIDs : Snowflake[] = [];
         
         msg.guild?.channels.cache.each(channel => {
@@ -30,7 +30,7 @@ class rodeo implements commandInterface{
             
             let changeChannels =  member?.voice.setChannel(channelIDs[random]);
 
-            changeChannels?.catch(()=>{
+            changeChannels?.catch((c)=>{
                 console.log("Something went wrong.")
                 return;
             })
@@ -52,4 +52,4 @@ class rodeo implements commandInterface{
     }
 }
 
-module.exports = new rodeo().ex;
+module.exports = new rodeo();

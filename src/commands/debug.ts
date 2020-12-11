@@ -7,10 +7,10 @@ class debug implements commandInterface{
     name: string = "debug";
 
     constructor(){
-        this.ex = new executor(this.name, this.executeFunc, this.validateFunc);
+        this.ex = new executor(this.executeFunc, this.validateFunc);
     }
 
-    executeFunc(msg: Message, args: string[], client: Client) : void {
+    private executeFunc(msg: Message, args: string[], client: Client) : void {
         const Embed = new discord.MessageEmbed();
         Embed.setTitle("Server Stats")
         Embed.addField("Server-Name:", msg.guild?.name);
@@ -35,4 +35,4 @@ class debug implements commandInterface{
     }
 }
 
-module.exports = new debug().ex;
+module.exports = new debug();
