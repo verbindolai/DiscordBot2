@@ -17,5 +17,4 @@ class ehre implements commandInterface{
         return true;
     }
 }
-let test;
 module.exports = new ehre();
