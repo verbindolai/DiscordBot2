@@ -23,23 +23,28 @@ app.post('/' ,function(request, response){
         console.log("Body is empty.");
         return;
     }
+    //
+    // // calculate the signature
+    // const expectedSignature = "sha256=" +
+    //     crypto.createHmac("sha256", secret)
+    //         .update(JSON.stringify(requestBody))
+    //         .digest("hex");
+    //
+    // //Request-Header Signature
+    // const signature = requestHead[sigHeaderName];
+    //
+    // // compare the signature against the one in the request
+    // if (signature !== expectedSignature) {
+    //     throw new Error("Invalid signature.");
+    // }
 
-    // calculate the signature
-    const expectedSignature = "sha256=" +
-        crypto.createHmac("sha256", secret)
-            .update(JSON.stringify(requestBody))
-            .digest("hex");
-
-    //Request-Header Signature
-    const signature = requestHead[sigHeaderName];
-
-    // compare the signature against the one in the request
-    if (signature !== expectedSignature) {
-        throw new Error("Invalid signature.");
-    }
 
     console.log(request.body)
     console.log(request.headers)
+    console.log()
+    console.log(requestBody)
+    console.log()
+    console.log(payload)
 
 });
 
