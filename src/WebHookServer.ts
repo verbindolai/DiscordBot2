@@ -1,12 +1,32 @@
-import express from 'express';
-import * as bodyParser from 'body-parser';
+import http from 'http';
+import crypto from 'crypto';
+import { exec } from 'child_process';
+import fs from "fs";
 
-const app = express();
-app.use(bodyParser.json());
 
-app.post('/', function(request, response){
-    console.log(request.body);      // your JSON
-});
 
-app.listen(7021);
-console.log("Listening on 7021...")
+const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+const SECRET = config.gitSecret;
+
+http
+    .createServer((req, res) => {
+        req.on('data', chunk => {
+            const signature = `sha1=${crypto
+                .createHmac('sha1', SECRET)
+                .update(chunk)
+                .digest('hex')}`;
+
+            const isAllowed = req.headers['x-hub-signature'] === signature;
+
+            const body = JSON.parse(chunk);
+
+            const isMaster = body?.ref === 'refs/heads/master';
+
+            if (isAllowed && isMaster) {
+                console.log("Worked!")
+            }
+        });
+
+        res.end();
+    })
+    .listen(7021);
