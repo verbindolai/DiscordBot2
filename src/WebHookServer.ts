@@ -14,6 +14,9 @@ app.use(bodyParser.json());
 
 
 app.post('/' ,function(request, response){
+    const requestBody = request.body;
+    const requestHead = request.headers
+
     const payload = JSON.stringify(request.body);
 
     if (!payload){
@@ -21,20 +24,21 @@ app.post('/' ,function(request, response){
         return;
     }
 
-    // // calculate the signature
-    // const expectedSignature = "sha256=" +
-    //     crypto.createHmac("sha256", secret)
-    //         .update(JSON.stringify(request.body))
-    //         .digest("hex");
-    //
-    // //Request-Header Signature
-    // const signature = request.headers[sigHeaderName];
-    //
-    // // compare the signature against the one in the request
-    // if (signature !== expectedSignature) {
-    //     throw new Error("Invalid signature.");
-    // }
+    // calculate the signature
+    const expectedSignature = "sha256=" +
+        crypto.createHmac("sha256", secret)
+            .update(JSON.stringify(requestBody))
+            .digest("hex");
 
+    //Request-Header Signature
+    const signature = requestHead[sigHeaderName];
+
+    // compare the signature against the one in the request
+    if (signature !== expectedSignature) {
+        throw new Error("Invalid signature.");
+    }
+
+    console.log(payload)
     console.log(request.body);
     console.log(request.headers)
 
