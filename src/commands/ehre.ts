@@ -11,7 +11,7 @@ class ehre implements commandInterface{
         this.ex = new executor(this.executeFunc, this.validateFunc)
     }
     private executeFunc(msg: Message, args: string[], client : Client): void {
-        msg.channel.send("TEST!!!11233.");
+        msg.channel.send("TEST!!!1123.");
     }
     validateFunc(msg : Message) : boolean{
         return true;
