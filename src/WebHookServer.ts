@@ -62,9 +62,9 @@ class WebHookServer {
          console.log(request.headers)
 
          let data = request.body;
-         let test;
          if (data.repository.name === "DiscordBot2"){
              if(data.ref === "refs/heads/WebHookServer2"){
+                 console.log("Executing Script: ")
                  exec('echo "Test"');
              }
          }
