@@ -1,7 +1,7 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 import fs from "fs";
-
+let test;
 
 const app = express();
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
