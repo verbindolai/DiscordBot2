@@ -9,7 +9,7 @@ const secret = config.gitSecret;
 const sigHeaderName = 'X-Hub-Signature-256'
 let test;
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 app.post('/', function(request, response){
     const payload = JSON.stringify(request.body);
