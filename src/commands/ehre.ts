@@ -11,7 +11,7 @@ class ehre implements commandInterface{
         this.ex = new executor(this.executeFunc, this.validateFunc)
     }
     private executeFunc(msg: Message, args: string[], client : Client): void {
-        msg.channel.send("Ehre.");
+        msg.channel.send("Du hast keine Ehre.");
     }
     validateFunc(msg : Message) : boolean{
         return true;
