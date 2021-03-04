@@ -45,7 +45,7 @@ export class Bot{
     private onReady() : void {
         this.client.on('ready', () => {
             console.log(`Logged in as ${this?.client?.user?.username}...`)
-            //this.timeTableNotify()
+            this.timeTableNotify()
             this.getNewestGarryPost()
 
             setInterval(() => {
