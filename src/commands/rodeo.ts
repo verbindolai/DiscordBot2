@@ -12,7 +12,7 @@ class rodeo implements commandInterface{
 
     private executeFunc(msg: Message, args: string[], client : Client): void {
         let channelIDs : Snowflake[] = [];
-        
+
         msg.guild?.channels.cache.each(channel => {
 
             if (channel.type === "voice"){
@@ -27,8 +27,12 @@ class rodeo implements commandInterface{
 
         let moving = setInterval( ()=>  {
             let random : number = Math.floor(Math.random() * channelIDs.length)
-            
+
             let changeChannels =  member?.voice.setChannel(channelIDs[random]);
+
+            changeChannels?.then(value => {
+                
+            })
 
             changeChannels?.catch((c)=>{
                 console.log("Something went wrong.")
