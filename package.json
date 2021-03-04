@@ -20,6 +20,8 @@
     "express": "^4.17.1",
     "express-middleware": "^3.4.2",
     "ffmpeg-static": "^4.2.7",
+    "lodash": "^4.17.21",
+    "puppeteer": "^8.0.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.2",
     "ytdl-core": "^4.1.2"
