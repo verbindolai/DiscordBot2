@@ -1,15 +1,21 @@
 const puppeteer = require('puppeteer');
 const url = "https://gharaei.de/en/";
 
-export function run () {
+export interface Post{
+    date : string;
+    message: string
+}
+
+
+export function run () : Promise<Post[]>{
     return new Promise(async (resolve, reject) => {
         try {
 
             const browser = await puppeteer.launch({headless:true});
             const page = await browser.newPage();
 
-
             console.log("\nStart scraping...")
+
             await page.goto(url);
             await page.waitForSelector('.entry-content')
             let posts = await page.evaluate(() => {
@@ -19,7 +25,7 @@ export function run () {
                 if (!childs) {
                     return;
                 }
-                const posts = []
+                const posts : Post[] = []
                 let date = ""
                 let message = ""
                 for (let i = 0; i < childs.length; i++){
@@ -31,7 +37,7 @@ export function run () {
                     }
                     if (content.includes('2021]')){
                         if(i > 0){
-                            const post = {date:date, message:message}
+                            const post : Post = {date:date, message:message}
                             posts.push(post)
                             date = "";
                             message = "";
@@ -41,7 +47,7 @@ export function run () {
                         message += content;
                     }
                     if (i+1 === childs.length){
-                        const post = {date:date, message:message}
+                        const post : Post = {date:date, message:message}
                         posts.push(post)
                         date = "";
                         message = "";
