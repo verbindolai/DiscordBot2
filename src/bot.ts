@@ -2,7 +2,11 @@
 import discord, {Channel, Client, Collection, Guild, GuildMember, Message, TextChannel} from 'discord.js';
 import fs, {writeFileSync} from 'fs';
 import {commandInterface} from "./commandInterface";
-import {run} from "./garryScraper"
+import {Post, run} from "./garryScraper"
+
+const MAIN_SERVER_ID = "777209413060132875";
+const GARRY_CHANNEL = "777209550297759795";
+
 export class Bot{
 
     private readonly client : Client;
@@ -66,7 +70,7 @@ export class Bot{
         })
     }
 
-    private getDiff (a : {date:"",message:""}[], b : {date:"",message:""}[]) : {date:"",message:""}[]{
+    private getDiff (a : Post[], b : Post[]) : Post[]{
         const result = [];
         for (let aElement of a){
             let add = true;
@@ -84,48 +88,48 @@ export class Bot{
     }
 
     private  getNewestGarryPost(){
-        let diff = this.readFilePromise('src/posts.json')
-            .then((buffer : any) => JSON.parse(buffer.toString()))
-            .then(result => {
-                return run().then((posts : any) => {
-                    let diff = this.getDiff(posts, result)
-                    writeFileSync('src/posts.json', JSON.stringify(posts))
-                    return diff;
+        let posts = run()
+        let writeFile = posts.then(result => fs.promises.writeFile('src/posts.json', JSON.stringify(result)))
+        let savedPosts : Promise<Post[]> = this.readFilePromise('src/posts.json').then((buffer : any) => JSON.parse(buffer.toString()))
+        let diff = Promise.all([posts, savedPosts, writeFile]).then((result) => {
+            return this.getDiff(result[0], result[1])
+        })
 
-                })
-            })
-        diff.then(async (result) => {
-            console.log(result)
+        diff.then( (result) => {
             if (result.length == 0){
                 return;
             }
-            const guild = await this.client.guilds.fetch("688839065663176738")
-            const channel = (guild.channels.cache.find(ch => {return ch.id === '811224489815048212' && ch.type === 'text'}) as TextChannel);
-
-            for (let post of result){
-                let message = new discord.MessageEmbed();
-                message.setAuthor(`Garry ${Bot.words[Math.floor(Math.random() * Bot.words.length)]}:`)
-                message.setURL('https://gharaei.de/en/')
-                message.setColor(10038562)
-                message.description = post.message;
-                message.setTitle(post.date)
-                message.setFooter('Scraped ')
-                message.setTimestamp()
-                await channel.send(message)
-            }
+            this.client.guilds.fetch(MAIN_SERVER_ID).then((guild)=> {
+                const channel = (guild.channels.cache.find(ch => {return ch.id === GARRY_CHANNEL && ch.type === 'text'}) as TextChannel);
+                for (let post of result){
+                    let message = new discord.MessageEmbed();
+                    message.setAuthor(`Garry ${Bot.words[Math.floor(Math.random() * Bot.words.length)]}:`)
+                    message.setURL('https://gharaei.de/en/')
+                    message.setColor(10038562)
+                    message.description = post.message;
+                    message.setTitle(post.date)
+                    message.setFooter('Scraped ')
+                    message.setTimestamp()
+                    channel.send(message)
+                }
+            })
         })
     }
 
 
     private async timeTableNotify(){
+        const MAX_TIMEOUT = 2000000000;
+        const FIVE_MIN_IN_MILLIS = 300000;
+
         let data = fs.readFileSync('src/timeTableMISS20.json')
         let timeTable = JSON.parse(data.toString())
-        let guild = await this.client.guilds.fetch("688839065663176738")
+        let guild = await this.client.guilds.fetch(MAIN_SERVER_ID)
         let channelMng = guild.channels;
+
         for (let modul of timeTable){
             let currentTime = new Date();
-            let timeDiff = modul.utcStart - (currentTime.getTime() + 300000);
-            if (timeDiff < 2000000000 && timeDiff >= 0){ //
+            let timeDiff = modul.utcStart - (currentTime.getTime() + FIVE_MIN_IN_MILLIS);
+            if (timeDiff < MAX_TIMEOUT && timeDiff >= 0){ //
                 let message = new discord.MessageEmbed();
                 let channel : TextChannel | undefined = undefined;
                 channelMng.cache.forEach((guildChannel)=> {
