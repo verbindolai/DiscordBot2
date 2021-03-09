@@ -1,8 +1,8 @@
 
 import discord, {Channel, Client, Collection, Guild, GuildMember, Message, TextChannel} from 'discord.js';
-import fs, {writeFileSync} from 'fs';
+import fs from 'fs';
 import {commandInterface} from "./commandInterface";
-import {Post, run} from "./garryScraper"
+import {Post, getPosts} from "./garry"
 
 const MAIN_SERVER_ID = "688839065663176738";
 const GARRY_CHANNEL = "811224489815048212";
@@ -50,24 +50,12 @@ export class Bot{
         this.client.on('ready', () => {
             console.log(`Logged in as ${this?.client?.user?.username}...`)
             this.timeTableNotify()
-            this.getNewestGarryPost()
+            this.getNewestPosts()
 
             setInterval(() => {
-                this.getNewestGarryPost()
-            },30 * 60000)
+                this.getNewestPosts()
+            },45 * 60000)
         });
-    }
-
-    private readFilePromise(path : string){
-        return new Promise((resolve, reject) => {
-            fs.readFile(path, (e, r) => {
-                if (e){
-                    return reject(e)
-                } else {
-                    return resolve(r)
-                }
-            });
-        })
     }
 
     private getDiff (a : Post[], b : Post[]) : Post[]{
@@ -87,18 +75,19 @@ export class Bot{
         return result;
     }
 
-    private  getNewestGarryPost(){
-        console.log('Fetching newest Post...')
-        let posts = run()
+    /**
+     * Gets the newest Posts and sends them to the right Channel.
+     * @private
+     */
+    private  getNewestPosts(){
+        let posts = getPosts()
         let writeFile = posts.then(result => fs.promises.writeFile('src/posts.json', JSON.stringify(result)))
-        let savedPosts : Promise<Post[]> = this.readFilePromise('src/posts.json').then((buffer : any) => JSON.parse(buffer.toString()))
+        let savedPosts : Promise<Post[]> = fs.promises.readFile('src/posts.json').then((buffer : any) => JSON.parse(buffer.toString()))
         let diff = Promise.all([posts, savedPosts, writeFile]).then((result) => {
             return this.getDiff(result[0], result[1])
         })
 
         diff.then( (result) => {
-            console.log('Got post Difference.')
-
             if (result.length == 0){
                 return;
             }
@@ -108,7 +97,7 @@ export class Bot{
                     let message = new discord.MessageEmbed();
                     message.setAuthor(`Garry ${Bot.words[Math.floor(Math.random() * Bot.words.length)]}:`)
                     message.setURL('https://gharaei.de/en/')
-                    message.setColor(10038562)
+                    message.setColor(1752220)
                     message.description = post.message;
                     message.setTitle(post.date)
                     message.setFooter('Scraped ')
@@ -120,6 +109,11 @@ export class Bot{
     }
 
 
+
+    /**
+     * Sends a message shortly before a module starts to the fitting channel.
+     * @private
+     */
     private async timeTableNotify(){
         const MAX_TIMEOUT = 2000000000;
         const FIVE_MIN_IN_MILLIS = 300000;
