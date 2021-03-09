@@ -10,8 +10,14 @@ export interface Post{
 export function run () : Promise<Post[]>{
     return new Promise(async (resolve, reject) => {
         try {
-
-            const browser = await puppeteer.launch({headless:true});
+            
+            const browser = await puppeteer.launch({
+                headless:true,
+                
+                //only needed on raspberry pi
+                executablePath: '/usr/bin/chromium-browser',
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
             const page = await browser.newPage();
 
             console.log("\nStart scraping...")
