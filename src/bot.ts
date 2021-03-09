@@ -4,8 +4,8 @@ import fs, {writeFileSync} from 'fs';
 import {commandInterface} from "./commandInterface";
 import {Post, run} from "./garryScraper"
 
-const MAIN_SERVER_ID = "777209413060132875";
-const GARRY_CHANNEL = "777209550297759795";
+const MAIN_SERVER_ID = "688839065663176738";
+const GARRY_CHANNEL = "811224489815048212";
 
 export class Bot{
 
