@@ -5,7 +5,7 @@
   "main": "build/main.js",
   "scripts": {
     "test": "node build/main.js debug",
-    "start": "node build/main.js"
+    "start": "tsc -b && node build/main.js"
   },
   "author": "",
   "license": "ISC",

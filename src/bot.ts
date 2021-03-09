@@ -88,6 +88,7 @@ export class Bot{
     }
 
     private  getNewestGarryPost(){
+        console.log('Fetching newest Post...')
         let posts = run()
         let writeFile = posts.then(result => fs.promises.writeFile('src/posts.json', JSON.stringify(result)))
         let savedPosts : Promise<Post[]> = this.readFilePromise('src/posts.json').then((buffer : any) => JSON.parse(buffer.toString()))
@@ -96,6 +97,8 @@ export class Bot{
         })
 
         diff.then( (result) => {
+            console.log('Got post Difference.')
+
             if (result.length == 0){
                 return;
             }
@@ -130,6 +133,7 @@ export class Bot{
             let currentTime = new Date();
             let timeDiff = modul.utcStart - (currentTime.getTime() + FIVE_MIN_IN_MILLIS);
             if (timeDiff < MAX_TIMEOUT && timeDiff >= 0){ //
+                console.log(`Modul: ${modul.name} starting in ${timeDiff}`)
                 let message = new discord.MessageEmbed();
                 let channel : TextChannel | undefined = undefined;
                 channelMng.cache.forEach((guildChannel)=> {
