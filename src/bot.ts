@@ -145,7 +145,7 @@ export class Bot{
                                 { name: 'Dauer', value: (modul.utcEnd - modul.utcStart) / (1000 * 60) + " Minuten", inline: true },
                                 { name: 'Raum', value: modul.room, inline: true },
                             )
-                        message.setTimestamp(new Date(modul.utcStart))
+                        message.setTimestamp(new Date(modul.utcStart - 3600000))
                     }
                 })
                if (channel != undefined){
