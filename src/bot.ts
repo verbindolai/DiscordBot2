@@ -127,7 +127,7 @@ export class Bot{
 
         for (let modul of timeTable){
             let currentTime = new Date();
-            let timeDiff = modul.utcStart - (currentTime.getTime() + FIVE_MIN_IN_MILLIS);
+            let timeDiff = modul.utcStart - 3600000 - (currentTime.getTime() + FIVE_MIN_IN_MILLIS);
             if (timeDiff < MAX_TIMEOUT && timeDiff >= 0){ //
                 console.log(`Modul: ${modul.name} starting in ${timeDiff}`)
                 let message = new discord.MessageEmbed();
