@@ -39,7 +39,6 @@ export class Bot{
     public start (): void {
         this.client.login(this.config.token).then(r => {}).catch((e) => {
             console.log(e);
-            this.start();
         });
         this.onReady();
         this.onMemberUpdate();
