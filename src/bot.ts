@@ -131,30 +131,33 @@ export class Bot{
             if (timeDiff < MAX_TIMEOUT && timeDiff >= 0){ //
                 console.log(`Modul: ${modul.name} starting in ${timeDiff}`)
                 let message = new discord.MessageEmbed();
-                let channel : TextChannel | undefined = undefined;
+
+                message.setColor('#0099ff')
+                message.setAuthor('Stundenplan')
+                message.setTitle(`${modul.name}`)
+                message.description = 'Diese Veranstaltung beginnt in 5 Minuten.'
+                message.addFields(
+
+                    { name: 'Professor', value: modul.prof, inline: true },
+                    { name: 'Dauer', value: (modul.utcEnd - modul.utcStart) / (1000 * 60) + " Minuten", inline: true },
+                    { name: 'Raum', value: modul.room, inline: true },
+                )
+                message.setTimestamp(new Date(modul.utcStart - 3600000))
+
                 channelMng.cache.forEach((guildChannel)=> {
+                    let channel : TextChannel | undefined = undefined;
                     if (guildChannel.type === "text" && this.checkMatch(modul.name, guildChannel.name)) {
                         channel = (guildChannel as TextChannel)
-                        message.setColor('#0099ff')
-                        message.setAuthor('Stundenplan')
-                        message.setTitle(`${modul.name}`)
-                        message.description = 'Diese Veranstaltung beginnt in 5 Minuten.'
-                        message.addFields(
-
-                                { name: 'Professor', value: modul.prof, inline: true },
-                                { name: 'Dauer', value: (modul.utcEnd - modul.utcStart) / (1000 * 60) + " Minuten", inline: true },
-                                { name: 'Raum', value: modul.room, inline: true },
-                            )
-                        message.setTimestamp(new Date(modul.utcStart - 3600000))
+                    }
+                    if (channel != undefined){
+                        setTimeout(() => {
+                            if(channel != undefined){
+                                channel.send(message)
+                            }
+                        }, timeDiff)
                     }
                 })
-               if (channel != undefined){
-                   setTimeout(() => {
-                       if(channel != undefined){
-                           channel.send(message)
-                       }
-                   }, timeDiff)
-               }
+
             }
         }
     }
