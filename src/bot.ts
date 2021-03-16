@@ -118,7 +118,7 @@ export class Bot{
      */
     private async timeTableNotify(){
         const MAX_TIMEOUT = 2000000000;
-        const FIVETEEN_MIN_IN_MILLIS = 900000;
+        const TEN_MIN_IN_MILLIS = 600000;
 
         let data = fs.readFileSync('src/timeTableMISS20.json')
         let timeTable = JSON.parse(data.toString())
@@ -127,7 +127,7 @@ export class Bot{
 
         for (let modul of timeTable){
             let currentTime = new Date();
-            let timeDiff = modul.utcStart - 3600000 - (currentTime.getTime() + FIVETEEN_MIN_IN_MILLIS);
+            let timeDiff = modul.utcStart - 3600000 - (currentTime.getTime() + TEN_MIN_IN_MILLIS);
 
             if (timeDiff < MAX_TIMEOUT && timeDiff >= 0){ //
                 console.log(`Modul: ${modul.name} starting in ${timeDiff}`)
@@ -138,7 +138,7 @@ export class Bot{
                 message.setColor('#0099ff')
                 message.setAuthor('Stundenplan')
                 message.setTitle(`${modul.name}`)
-                message.description = 'Diese Veranstaltung beginnt in 15 Minuten.'
+                message.description = 'Diese Veranstaltung beginnt in 10 Minuten.'
                 message.addFields(
 
                     { name: 'Professor', value: modul.prof, inline: true },
