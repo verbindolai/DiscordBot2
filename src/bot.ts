@@ -118,7 +118,7 @@ export class Bot{
      */
     private async timeTableNotify(){
         const MAX_TIMEOUT = 2000000000;
-        const FIVE_MIN_IN_MILLIS = 300000;
+        const FIVETEEN_MIN_IN_MILLIS = 900000;
 
         let data = fs.readFileSync('src/timeTableMISS20.json')
         let timeTable = JSON.parse(data.toString())
