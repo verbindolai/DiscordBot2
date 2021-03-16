@@ -138,7 +138,7 @@ export class Bot{
                 message.setColor('#0099ff')
                 message.setAuthor('Stundenplan')
                 message.setTitle(`${modul.name}`)
-                message.description = 'Diese Veranstaltung beginnt in 10 Minuten.'
+                message.description = 'Diese Veranstaltung beginnt in 15 Minuten.'
                 message.addFields(
 
                     { name: 'Professor', value: modul.prof, inline: true },
