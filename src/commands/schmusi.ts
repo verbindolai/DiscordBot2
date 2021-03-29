@@ -45,28 +45,35 @@ class schmusi implements commandInterface{
         let recipientID = recipient?.id
 
         msg.channel.send(`Give a Schmusi to <@${recipientID}>?`).then(async (message) => {
-            await message.react('🥰').then(() => message.react('🤮'));
+            await message.react('🥰').then(async () => await message.react('🤮'));
 
             const filter = (reaction : any, user : any) => {
-                return ['🥰', '🤮'].includes(reaction.emoji.name) && user.id != msg.author.id;
+                return ['🥰', '🤮'].includes(reaction.emoji.name);
             };
 
-            message.awaitReactions(filter, {time: 20000})
+            message.awaitReactions(filter, {max:100, time: 10000})
                 .then(collected => {
                     let upVotes = 0;
                     let downVotes = 0;
 
                     collected.forEach((reaction) => {
+                        console.log(reaction.emoji.name, reaction.count)
                         if (reaction?.emoji.name === '🥰') {
-                            upVotes++;
+                            if (reaction.count){
+                                upVotes += reaction.count;
+                            }
                         } else {
-                            downVotes++;
+                            if (reaction.count) {
+                                downVotes += reaction.count;
+                            }
                         }
                     })
 
                     const votes = upVotes + downVotes;
 
-                    if (votes > 1){
+
+
+                    if (votes >= 2){
                         if (upVotes > downVotes){
                             this.addSchmusi(recipientID);
                             msg.channel.send(`<@${recipientID}> gets a Schmusi! 🥰`)
