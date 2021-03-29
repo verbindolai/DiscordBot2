@@ -25,6 +25,7 @@ class schmusi implements commandInterface{
         if (!recipient){
             this.getAllSchmusis().then((schmusis) => {
                 if(!schmusis || schmusis.length < 1){
+                    msg.channel.send('Noone has a Schmusi yet..');
                     return;
                 }   
                 
