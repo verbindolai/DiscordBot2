@@ -52,15 +52,15 @@ export class Bot{
             },60 * 1000);
         });
     }
-    
+
     /*
     On Ready Event
     */
     private onReady() : void {
         this.client.on('ready', () => {
             console.log(`Logged in as ${this?.client?.user?.username}...`)
-            this.timeTableNotify()
-            this.getNewestPosts()
+            // this.timeTableNotify()
+            // this.getNewestPosts()
 
             setInterval(() => {
                 this.getNewestPosts()
@@ -135,11 +135,11 @@ export class Bot{
 
         for (let modul of timeTable){
             let currentTime = new Date();
-            let timeDiff = modul.utcStart - 3600000 - (currentTime.getTime() + FIVETEEN_MIN_IN_MILLIS);
+            let timeDiff = modul.utcStart - 7200000 - (currentTime.getTime() + FIVETEEN_MIN_IN_MILLIS);
 
             if (timeDiff < MAX_TIMEOUT && timeDiff >= 0){ //
                 console.log(`Modul: ${modul.name} starting in ${timeDiff}`)
-                console.log(modul.utcStart - 3600000)
+                console.log(modul.utcStart - 7200000)
 
                 let message = new discord.MessageEmbed();
 
@@ -153,7 +153,7 @@ export class Bot{
                     { name: 'Dauer', value: (modul.utcEnd - modul.utcStart) / (1000 * 60) + " Minuten", inline: true },
                     { name: 'Raum', value: modul.room, inline: true },
                 )
-                message.setTimestamp(new Date(modul.utcStart - 3600000))
+                message.setTimestamp(new Date(modul.utcStart - 7200000))
 
                 channelMng.cache.forEach((guildChannel)=> {
                     let channel : TextChannel | undefined = undefined;
@@ -200,7 +200,7 @@ export class Bot{
                 }
 
                 try {
-                    this.commands.get(command)?.ex.execute(msg, args, this.client);
+                    this.commands.get(command)?.execute(msg, args, this.client);
 
                 } catch (error) {
                     console.error(error);
