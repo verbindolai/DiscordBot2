@@ -3,11 +3,11 @@ import { commandInterface } from '../commandInterface';
 import { ExecuteFunction, executor, ValidateFunction } from './executor';
 
 class debug implements commandInterface{
-    ex: executor;
+
     name: string = "debug";
 
     constructor(){
-        this.ex = new executor(this.executeFunc, this.validateFunc);
+
     }
 
     private executeFunc(msg: Message, args: string[], client: Client) : void {
@@ -17,21 +17,28 @@ class debug implements commandInterface{
         Embed.addField("Server-ID:", msg.guild?.id);
         Embed.addField("Server-Region:", msg.guild?.region)
         Embed.addField("MemberCount:", msg.guild?.memberCount);
-        
+
         let members : string = "";
 
         msg.guild?.members.cache.each(member => {
-            members += "Username: "+member.user.username + "\n" + 
-            "Nickname: "+member.nickname + "\n" + 
+            members += "Username: "+member.user.username + "\n" +
+            "Nickname: "+member.nickname + "\n" +
             "ID: "+member.id + "\n" +
             "Permissions: "+member.permissions + "\n\n";
         })
 
         Embed.addField("Members (Currently on Server):", members);
         msg.channel.send(Embed);
+
     }
-    validateFunc(msg : Message) : boolean {
+    private validateFunc(msg : Message) : boolean {
         return true;
+    }
+
+    execute(msg: Message, args: string[], client: Client) {
+        if (this.validateFunc(msg)){
+            this.executeFunc(msg, args, client);
+        }
     }
 }
 

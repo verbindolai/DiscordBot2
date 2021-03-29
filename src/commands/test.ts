@@ -5,16 +5,19 @@ import { executor } from './executor';
 
 class test implements commandInterface{
     name: string = "test";
-    ex: executor;
 
     constructor(){
-        this.ex = new executor(this.executeFunc, this.validateFunc)
     }
     private executeFunc(msg: Message, args: string[], client : Client): void {
         msg.channel.send("Test erfolgreich....");
     }
-    validateFunc(msg : Message) : boolean{
+    private validateFunc(msg : Message) : boolean{
         return true;
+    }
+    execute(msg: Message, args: string[], client: Client) {
+        if (this.validateFunc(msg)){
+            this.executeFunc(msg, args, client);
+        }
     }
 }
 

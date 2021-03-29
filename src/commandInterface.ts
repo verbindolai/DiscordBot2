@@ -1,7 +1,7 @@
-import {executor, ExecuteFunction, ValidateFunction} from "./commands/executor";
+import {Client, Message} from "discord.js";
 
 export interface commandInterface {
-    ex : executor
     name : string
+    execute(msg: Message, args: string[], client: Client) : void;
 }
 

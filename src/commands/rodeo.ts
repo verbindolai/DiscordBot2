@@ -3,10 +3,9 @@ import { commandInterface } from '../commandInterface';
 import { executor } from './executor';
 
 class rodeo implements commandInterface{
-    ex: executor;
     name: string = "rodeo";
+
     constructor() {
-        this.ex = new executor(this.executeFunc, this.validateFunc);
     }
 
 
@@ -31,7 +30,7 @@ class rodeo implements commandInterface{
             let changeChannels =  member?.voice.setChannel(channelIDs[random]);
 
             changeChannels?.then(value => {
-                
+
             })
 
             changeChannels?.catch((c)=>{
@@ -47,13 +46,20 @@ class rodeo implements commandInterface{
         }, 2500)
 
     }
-    validateFunc(msg : Message) : boolean{
+    private validateFunc(msg : Message) : boolean{
         if(msg?.member?.hasPermission('ADMINISTRATOR')){
             return true;
         }
         msg.channel.send("You dont have the permission to use this command.")
         return false;
     }
+
+    execute(msg: Message, args: string[], client: Client) {
+        if (this.validateFunc(msg)){
+            this.executeFunc(msg, args, client);
+        }
+    }
+
 }
 
 module.exports = new rodeo();

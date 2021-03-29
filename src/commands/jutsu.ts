@@ -4,10 +4,8 @@ import { executor } from './executor';
 
 class jutsu implements commandInterface{
     name: string = "jutsu";
-    ex: executor;
 
     constructor(){
-        this.ex = new executor(this.executeFunc, this.validateFunc);
     }
     private executeFunc(msg: Message, args: string[], client : Client): void {
         let member : GuildMember | null = msg.member;
@@ -20,10 +18,16 @@ class jutsu implements commandInterface{
             targetMember.voice.setChannel(memberChannel)
                 .then(r => {})
                 .catch(c => {});
-        } 
+        }
     }
-    validateFunc(msg : Message) : boolean{
+    private validateFunc(msg : Message) : boolean{
         return true;
+    }
+
+    execute(msg: Message, args: string[], client: Client) {
+        if (this.validateFunc(msg)){
+            this.executeFunc(msg, args, client);
+        }
     }
 }
 module.exports = new jutsu();
