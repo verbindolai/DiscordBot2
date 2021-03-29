@@ -24,6 +24,10 @@ class schmusi implements commandInterface{
 
         if (!recipient){
             this.getAllSchmusis().then((schmusis) => {
+                if(!schmusis || schmusis.length < 1){
+                    return;
+                }   
+                
                 let message = new discord.MessageEmbed();
                 message.setColor(1752220)
                 message.description = 'Liste aller Schmusis:';
