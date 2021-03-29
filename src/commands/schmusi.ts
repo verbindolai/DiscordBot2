@@ -56,7 +56,7 @@ class schmusi implements commandInterface{
                 return ['🥰', '🤮'].includes(reaction.emoji.name);
             };
 
-            message.awaitReactions(filter, {max:100, time: 10000})
+            message.awaitReactions(filter, {max:100, time: 20000})
                 .then(collected => {
                     let upVotes = 0;
                     let downVotes = 0;
