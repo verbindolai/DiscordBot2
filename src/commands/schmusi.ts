@@ -1,139 +1,116 @@
-import discord, {Client, GuildMember, Message} from 'discord.js';
-import { commandInterface } from '../commandInterface';
+import discord, { Client, GuildMember, Message } from 'discord.js';
+import { commandInterface } from '../interface/commandInterface';
 import fs from "fs";
-const mariadb = require('mariadb');
-const DB = JSON.parse(fs.readFileSync('db.json', 'utf8'));
+import { Schmuser } from '../lib/schmuser';
 
-const pool = mariadb.createPool({
-    host: DB.host,
-    user: DB.user,
-    password: DB.passw,
-    database: DB.db,
-})
+const MIN_VOTES_NEEDED = 2;
 
-class schmusi implements commandInterface{
+class Schmusi implements commandInterface {
     name: string = "schmusi";
     schmusis = new Map();
 
-    constructor(){
+    constructor() {
 
     }
 
-    private executeFunc(msg: Message, args: string[], client: Client) : void {
+    private executeFunc(msg: Message, args: string[], client: Client): void {
         let recipient = msg.mentions.members?.first();
 
-        if (!recipient){
-            this.getAllSchmusis().then((schmusis) => {
-                if(!schmusis || schmusis.length < 1){
-                    msg.channel.send('Noone has a Schmusi yet..');
-                    return;
-                }   
-                
-                let message = new discord.MessageEmbed();
-                message.setColor(1752220)
-                message.description = 'Liste aller Schmusis:';
-                message.setTitle('Schmusis')
-                message.addFields(
-                    { name: 'Name', value: "\n", inline: true },
-                        { name: 'Schmusis', value: "\n", inline: true },
-                )
-                for (let schmuser of schmusis){
-                    message.fields[0].value += `<@${schmuser.name}>` + '\n';
-                    message.fields[1].value += schmuser.count + '\n';
-                }
-                message.setTimestamp()
-                msg.channel.send(message)
-            })
+        if (!recipient) {
+            this.listAllSchmusers(msg);
             return;
         }
+        this.giveSchmusi(msg, recipient.id)
+    }
 
-        let recipientID = recipient?.id
 
-        msg.channel.send(`Give a Schmusi to <@${recipientID}>?`).then(async (message) => {
-            await message.react('🥰').then(async () => await message.react('🤮'));
+    private giveSchmusi(msg: Message, recipientID: string) {
+        msg.channel.send(`Give a Schmusi to <@${recipientID}>?`).then(
 
-            const filter = (reaction : any, user : any) => {
-                return ['🥰', '🤮'].includes(reaction.emoji.name);
-            };
+            async (message) => {
 
-            message.awaitReactions(filter, {max:100, time: 20000})
-                .then(collected => {
-                    let upVotes = 0;
-                    let downVotes = 0;
+                await message.react('🥰').then(
+                    async () => await message.react('🤮'));
 
-                    collected.forEach((reaction) => {
-                        console.log(reaction.emoji.name, reaction.count)
-                        if (reaction?.emoji.name === '🥰') {
-                            if (reaction.count){
-                                upVotes += reaction.count;
+                const filter = (reaction: any, user: any) => {
+                    return ['🥰', '🤮'].includes(reaction.emoji.name);
+                };
+
+                message.awaitReactions(filter, { max: 100, time: 20000 })
+                    .then(collected => {
+                        let upVotes = 0;
+                        let downVotes = 0;
+
+                        collected.forEach((reaction) => {
+                            console.log(reaction.emoji.name, reaction.count)
+                            if (reaction?.emoji.name === '🥰') {
+                                if (reaction.count) {
+                                    upVotes += reaction.count;
+                                }
+                            } else if (reaction?.emoji.name === '🤮') {
+                                if (reaction.count) {
+                                    downVotes += reaction.count;
+                                }
+                            }
+                        })
+
+                        const votes = upVotes + downVotes;
+
+                        if (votes >= MIN_VOTES_NEEDED) {
+                            if (upVotes > downVotes) {
+                                Schmuser.getSchmuserByID(recipientID).then(schmuser => {
+                                    schmuser.addSchmusi(1);
+                                }).catch(err => console.error(err));
+
+                                msg.channel.send(`<@${recipientID}> gets a Schmusi! 🥰`)
+                            } else {
+                                msg.channel.send(`<@${recipientID}> doesn't get a Schmusi.. 😟`)
                             }
                         } else {
-                            if (reaction.count) {
-                                downVotes += reaction.count;
-                            }
+                            msg.channel.send(`Not enough Votes to give <@${recipientID}> a Schmusi.`)
                         }
                     })
+                    .catch(collected => {
 
-                    const votes = upVotes + downVotes;
-
-
-
-                    if (votes >= 2){
-                        if (upVotes > downVotes){
-                            this.addSchmusi(recipientID);
-                            msg.channel.send(`<@${recipientID}> gets a Schmusi! 🥰`)
-                        } else {
-                            msg.channel.send(`<@${recipientID}> doesn't get a Schmusi.. 😟`)
-                        }
-                    } else {
-                        msg.channel.send(`Not enough Votes to give <@${recipientID}> a Schmusi.`)
-                    }
-                })
-                .catch(collected => {
-
-                });
-        })
+                    });
+            }
+        )
     }
 
-    private async getAllSchmusis() {
-        let conn = await pool.getConnection()
-        let data = await conn.query(`SELECT * FROM schmusis`)
-        return data;
+    private listAllSchmusers(msg: Message) {
+        Schmuser.getAllSchmusers().then((allSchmusers: Schmuser[]) => {
+            if (!allSchmusers || allSchmusers.length < 1) {
+                msg.channel.send('Noone has a Schmusi yet..');
+                return;
+            }
+
+            let message = new discord.MessageEmbed();
+            message.setColor(1752220)
+            message.description = 'Liste aller Schmusis:';
+            message.setTitle('Schmusis')
+            message.addFields(
+                { name: 'Name', value: "\n", inline: true },
+                { name: 'Schmusis', value: "\n", inline: true },
+            )
+            for (const schmuser of allSchmusers) {
+                message.fields[0].value += `<@${schmuser.discordID}>` + '\n';
+                message.fields[1].value += schmuser.schmusis + '\n';
+            }
+            message.setTimestamp()
+            msg.channel.send(message)
+        }).catch(err => console.error(err));
     }
 
-    private validateFunc(msg : Message) : boolean {
+    private validateFunc(msg: Message): boolean {
         return true;
     }
 
     public execute(msg: Message, args: string[], client: Client) {
-        if (this.validateFunc(msg)){
+        if (this.validateFunc(msg)) {
             this.executeFunc(msg, args, client);
-        }
-    }
-
-    private async getSchmusisFromDB (id : string) {
-        let conn = await pool.getConnection()
-        let data = await conn.query(`SELECT * FROM schmusis WHERE name='${id}'`)
-        let schmuser = data[0];
-
-        if (!schmuser){
-            return;
-        }
-        return schmuser.count;
-    }
-
-    private async addSchmusi (id : string) {
-        let conn = await pool.getConnection()
-        let data = await conn.query(`SELECT * FROM schmusis WHERE name='${id}'`);
-        let schmuser = data[0]
-
-        if (!schmuser){
-            conn.query(`INSERT INTO schmusis (name, count) VALUES ('${id}',1)`);
-        } else {
-            conn.query(`UPDATE schmusis SET count=${schmuser.count + 1} WHERE name=${id}`);
         }
     }
 
 }
 
-module.exports = new schmusi();
+module.exports = new Schmusi();
