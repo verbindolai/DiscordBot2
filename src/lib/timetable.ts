@@ -4,8 +4,12 @@ import isSameDay from 'date-fns/isSameDay'
 import parseISO from 'date-fns/parseISO'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import subMinutes from 'date-fns/subMinutes'
+import discord, { Client, GuildChannel, TextChannel } from 'discord.js'
+import { MAIN_SERVER_ID } from "../bot";
+
 
 const MINUTES_BEFORE_LESSON_START = 15;
+const MINUTES_IN_HOUR = 60;
 
 const fakultät = "i"
 let semsterID = "ss21"
@@ -56,15 +60,56 @@ function getTodaysLessons() {
     return getLessonsForDay(new Date())
 }
 
-function startLessonTimers() {
-    getTodaysLessons().then(lessons => {
+export function startLessonTimers(client: Client) {
+    getTodaysLessons().then(async (lessons) => {
         for (const lesson of lessons) {
-            const milliSecsUntillMessage = differenceInMilliseconds(new Date(), subMinutes(parseISO(lesson.start), MINUTES_BEFORE_LESSON_START))
+            const millisecsTillMessage = differenceInMilliseconds(new Date(), subMinutes(parseISO(lesson.start), MINUTES_BEFORE_LESSON_START))
 
-            setTimeout(() => {
+            let guild = await client.guilds.fetch(MAIN_SERVER_ID)
+            let channelMng = guild.channels;
 
-            }, milliSecsUntillMessage);
+            channelMng.cache.forEach((guildChannel) => {
+                let channel: TextChannel | undefined = undefined;
+                if (guildChannel.type === "text" && checkMatch(lesson.title, guildChannel.name)) {
+                    channel = (guildChannel as TextChannel)
+                }
+
+                if (!channel) {
+                    return;
+                }
+
+                setTimeout(() => {
+                    if (channel) {
+                        channel.send(createTimeTableEmbed(lesson))
+                    }
+                }, millisecsTillMessage);
+            })
         }
     })
+}
 
+function createTimeTableEmbed(lesson: any) {
+    let message = new discord.MessageEmbed();
+
+    message.setColor('#0099ff')
+    message.setAuthor('Stundenplan')
+    message.setTitle(`${lesson.title}`)
+    message.description = `Diese Veranstaltung beginnt in ${MINUTES_BEFORE_LESSON_START} Minuten.`
+    message.addFields(
+        { name: 'Professor', value: lesson.meta.organiserName, inline: true },
+        { name: 'Dauer', value: lesson.duration * MINUTES_IN_HOUR + " Minuten", inline: true },
+        { name: 'Raum', value: lesson.location, inline: true })
+    return message;
+}
+
+function checkMatch(a: String, b: String) {
+    let result = true;
+    let bArr = b.split('-');
+    for (let string of bArr) {
+        if (a.toUpperCase().match(string.toUpperCase()) == null) {
+            result = false;
+            break;
+        }
+    }
+    return result
 }
