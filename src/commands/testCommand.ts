@@ -1,30 +1,22 @@
-import {commandInterface} from "../commandInterface";
-import discord, {Message,Client} from "discord.js";
-import {executor, ExecuteFunction, ValidateFunction} from "./executor";
+import { Client, Message } from 'discord.js';
+import { commandInterface } from '../interface/commandInterface';
 
-
-export class testCommand implements commandInterface {
-
-    name: string = "ballern"
+class test implements commandInterface {
+    name: string = "test";
 
     constructor() {
-
     }
-    private executeFunc(msg: Message, args: string[], client: Client): void{
-        console.log(msg.guild?.members);
+    private executeFunc(msg: Message, args: string[], client: Client): void {
+        msg.channel.send("Test erfolgreich....");
     }
-    private validateFunc(msg: Message): boolean{
+    private validateFunc(msg: Message): boolean {
         return true;
     }
-
     execute(msg: Message, args: string[], client: Client) {
-        if (this.validateFunc(msg)){
+        if (this.validateFunc(msg)) {
             this.executeFunc(msg, args, client);
         }
     }
-
 }
 
-module.exports = new testCommand();
-
-
+module.exports = new test();

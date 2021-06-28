@@ -1,0 +1,12 @@
+[Unit]
+Description=DiscordBot-Server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/.djsbots/DiscordBot2
+ExecStart=npm start
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target
