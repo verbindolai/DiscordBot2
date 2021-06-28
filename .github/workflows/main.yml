@@ -27,14 +27,10 @@ jobs:
         uses: actions/setup-node@v2.1.3 
         with: 
           node-version: 12
-      - name: Install Typescript
-        run: npm install -g typescript
-      - name: Install Dependencies 
-        run: npm ci
+      - name: Install Dependencies
+        run: npm install
       - name: Typescript compiler
-        run: tsc --build
-      
-      # Runs a single command using the runners shell
+        run: tsc -b
       - name: Jest Tests
         run: npm test
 
