@@ -60,7 +60,12 @@ class Schmusi implements commandInterface {
                             if (upVotes > downVotes) {
                                 Schmuser.getSchmuserByID(recipientID).then(schmuser => {
                                     schmuser.addSchmusi(1);
-                                }).catch(err => console.error(err));
+                                }).catch(() => {
+                                    Schmuser.createSchmuserInDB(recipientID).then(schmuser => {
+                                        schmuser.addSchmusi(1);
+                                    });
+
+                                });
 
                                 msg.channel.send(`<@${recipientID}> gets a Schmusi! 🥰`)
                             } else {

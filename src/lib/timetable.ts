@@ -2,6 +2,9 @@ import { request } from "./comm";
 import getISOWeek from 'date-fns/getISOWeek'
 import isSameDay from 'date-fns/isSameDay'
 import parseISO from 'date-fns/parseISO'
+import { zonedTimeToUtc } from 'date-fns-tz'
+import { utcToZonedTime } from 'date-fns-tz'
+
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import subMinutes from 'date-fns/subMinutes'
 import discord, { Client, GuildChannel, TextChannel } from 'discord.js'
@@ -10,10 +13,11 @@ import { MAIN_SERVER_ID } from "../bot";
 
 const MINUTES_BEFORE_LESSON_START = 15;
 const MINUTES_IN_HOUR = 60;
+const TIMEZONE = 'Europe/Berlin';
 
 const fakultät = "i"
 let semsterID = "ss21"
-let semester = 3;
+let semester = 4;
 const prüfungsOrdnung = "po18"
 
 const splusEinsAPILink = "https://spluseins.de/api/splus/"
@@ -23,19 +27,20 @@ const softwareEngineeringID = `${fakultät}_soe_${prüfungsOrdnung}_${semester}_
 const computerEngineeringID = `${fakultät}_ce_${prüfungsOrdnung}_${semester}_${semsterID}`
 
 
-async function getTimeTableForWeek(week: number) {
+export async function getTimeTableForWeek(week: number) {
     const meiLessons = request(`${splusEinsAPILink}${medieninformatikID}/${week}`).then(res => JSON.parse(res))
     const soeLessons = request(`${splusEinsAPILink}${softwareEngineeringID}/${week}`).then(res => JSON.parse(res))
     const ceLessons = request(`${splusEinsAPILink}${computerEngineeringID}/${week}`).then(res => JSON.parse(res))
 
     const data = await Promise.all([meiLessons, soeLessons, ceLessons]);
     const combinedLessonArr = [...data[0].events, ...data[1].events, ...data[2].events];
-    const res = Array.from(new Set(combinedLessonArr.map(lesson => lesson.id))).map(id => combinedLessonArr.find(lesson => lesson.id === id));
+
+    const res = Array.from(new Set(combinedLessonArr.map(lesson => lesson.id + lesson.start))).map(id => combinedLessonArr.find(lesson => lesson.id + lesson.start === id));
     return res;
 }
 
 function getCurrentTimeTable() {
-    const week = getISOWeek(new Date())
+    const week = getISOWeek(zonedTimeToUtc(new Date(), TIMEZONE))
     const table = getTimeTableForWeek(week);
     return table;
 }
@@ -57,13 +62,20 @@ export function getLessonsForDay(day: Date): Promise<any[]> {
 }
 
 function getTodaysLessons() {
-    return getLessonsForDay(new Date())
+    return getLessonsForDay(zonedTimeToUtc(new Date(), TIMEZONE))
 }
 
 export function startLessonTimers(client: Client) {
     getTodaysLessons().then(async (lessons) => {
         for (const lesson of lessons) {
-            const millisecsTillMessage = differenceInMilliseconds(new Date(), subMinutes(parseISO(lesson.start), MINUTES_BEFORE_LESSON_START))
+
+            const reminderTime = subMinutes(parseISO(lesson.start), MINUTES_BEFORE_LESSON_START);
+            const now = zonedTimeToUtc(new Date(), TIMEZONE);
+            const millisecsTillMessage = differenceInMilliseconds(reminderTime, now)
+
+            if (millisecsTillMessage < 0) {
+                continue;
+            }
 
             let guild = await client.guilds.fetch(MAIN_SERVER_ID)
             let channelMng = guild.channels;
@@ -77,7 +89,6 @@ export function startLessonTimers(client: Client) {
                 if (!channel) {
                     return;
                 }
-
                 setTimeout(() => {
                     if (channel) {
                         channel.send(createTimeTableEmbed(lesson))

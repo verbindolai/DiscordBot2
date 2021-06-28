@@ -32,7 +32,7 @@ export class Schmuser {
         let conn;
         try {
             conn = await pool.getConnection()
-            conn.query(`UPDATE schmusis SET count=${this.schmusis + num} WHERE name=${this._discordID}`);
+            conn.query("UPDATE schmusis SET count=? WHERE name=?", [this.schmusis + num, this._discordID]);
             this._schmusis += num;
         } catch (error) {
             console.error(error);
@@ -47,7 +47,7 @@ export class Schmuser {
 
         try {
             conn = await pool.getConnection()
-            data = await conn.query(`SELECT * FROM schmusis WHERE name='${id}'`);
+            data = await conn.query("SELECT * FROM schmusis WHERE name='?'", [id]);
         } catch (error) {
             console.error(error);
         } finally {
@@ -60,21 +60,21 @@ export class Schmuser {
         let conn;
         try {
             conn = await pool.getConnection()
-            conn.query(`INSERT INTO schmusis (name, count) VALUES ('${id}', 0)`)
+            conn.query("INSERT INTO schmusis (name, count) VALUES ('?', 0)", [id])
         } catch (error) {
             console.error(error);
         } finally {
             if (conn) conn.end();
         }
+        return new Schmuser(id, 0);
     }
 
     public static async getSchmuserByID(id: string) {
         let schmuserData;
         let conn;
-
         try {
             conn = await pool.getConnection()
-            const data = await conn.query(`SELECT * FROM schmusis WHERE name='${id}'`);
+            const data = await conn.query("SELECT * FROM schmusis WHERE name='?'", [id]);
             schmuserData = data[0];
         } catch (error) {
             console.error(error);
@@ -91,15 +91,13 @@ export class Schmuser {
 
     public static async getAllSchmusers() {
 
-        console.log(cfg)
-
         const schmuserArr: Schmuser[] = [];
         let conn;
         let data;
 
         try {
             conn = await pool.getConnection()
-            data = await conn.query(`SELECT * FROM schmusis`)
+            data = await conn.query("SELECT * FROM schmusis")
         } catch (error) {
             console.error(error);
         } finally {

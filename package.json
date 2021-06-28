@@ -1,10 +1,16 @@
 {
   "name": "discordbot",
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "src/tests",
+      "node_modules"
+    ]
+  },
   "version": "1.0.0",
   "description": "",
   "main": "build/main.js",
   "scripts": {
-    "test": "node build/main.js debug",
+    "test": "jest",
     "start": "tsc -b && node build/main.js"
   },
   "author": "",
@@ -18,11 +24,13 @@
     "colors": "1.4.0",
     "date-and-time": "^1.0.1",
     "date-fns": "^2.22.1",
+    "date-fns-tz": "^1.1.4",
     "discord-ytdl-core": "^5.0.4",
     "discord.js": "12.3.1",
     "express": "^4.17.1",
     "express-middleware": "^3.4.2",
     "ffmpeg-static": "^4.4.0",
+    "jest": "^27.0.5",
     "lodash": "^4.17.21",
     "mariadb": "^2.5.4",
     "ts-node": "^9.1.1",
@@ -31,6 +39,7 @@
   },
   "devDependencies": {
     "@types/date-and-time": "^0.13.0",
+    "@types/jest": "^26.0.23",
     "@types/node": "^14.17.4"
   }
 }

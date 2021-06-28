@@ -1,7 +1,7 @@
 import { Client, GuildMember, Message, Snowflake } from 'discord.js';
 import { commandInterface } from '../interface/commandInterface';
 
-class rodeo implements commandInterface {
+class Rodeo implements commandInterface {
     name: string = "rodeo";
 
     constructor() {
@@ -61,4 +61,4 @@ class rodeo implements commandInterface {
 
 }
 
-module.exports = new rodeo();
+module.exports = new Rodeo();

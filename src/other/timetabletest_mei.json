@@ -1,0 +1,38 @@
+{
+    "name": "Bachelor MEI (PO18) - 3. Semester",
+    "events": [
+        {
+            "id": "u3K46",
+            "title": "I-Software Engineering",
+            "start": "2021-06-21T10:30:00.000Z",
+            "end": "2021-06-21T12:00:00.000Z",
+            "duration": 1.5,
+            "location": "05/Sporthalle",
+            "meta": {
+                "organiserShortname": "in M H",
+                "organiserName": "Prof.in Dr. M. H.",
+                "description": ""
+            }
+        },
+        {
+            "id": "GX8vl",
+            "title": "I-Computermathematik",
+            "start": "2021-06-25T08:00:00.000Z",
+            "end": "2021-06-25T09:30:00.000Z",
+            "duration": 1.5,
+            "location": "05/Sporthalle",
+            "meta": {
+                "organiserShortname": "S B",
+                "organiserName": "Dr. rer. nat. S. B.",
+                "description": ""
+            }
+        }
+    ],
+    "meta": {
+        "id": "i_mei_po18_3_ss21",
+        "faculty": "Informatik",
+        "degree": "Bachelor",
+        "specialisation": "MEI (PO18)",
+        "semester": 3
+    }
+}
