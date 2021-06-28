@@ -28,7 +28,7 @@ test('checks if no lesson is twice in the timetable array', async () => {
 })
 
 test('checks if the right lesson is returned', async () => {
-    const lessons = await timetable.getLessonsForDay(timezones.zonedTimeToUtc(parseISO("2021-06-25"), 'Europe/Berlin'))
+    const lessons = await timetable.getLessonsForDay(parseISO("2021-06-25"))
     expect(lessons.length).toBe(1);
     expect(lessons[0].title).toBe("I-Computermathematik");
 
