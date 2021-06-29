@@ -11,8 +11,8 @@ const URL = "https://gharaei.de/en/";
 const POST_HTML_CONTAINER_NAME = '.entry-content';
 const HEADER_SELECTOR = '2021]'
 
-export const sayWords = ['erzählt', 'teilt mit', 'schreit', 'denkt', 'singt', 'plaudert', 'informiert', 'sagt', 'schildert', 'präsentiert', 'beklagt', 'piept', 'brummt', 'verrät'];
-export const endings = ['während er seine Zähne putzt', 'während er Yoga macht', 'während er die Wäsche aufhängt', 'während er Hardware inspiziert', 'während er schläft', 'während er auf dem Mond fliegt']
+export const sayWords = ['erzählt', 'teilt mit', 'schreit', 'denkt', 'singt', 'plaudert', 'informiert', 'sagt', 'schildert', 'präsentiert', 'beklagt', 'piept', 'brummt', 'verrät', 'morst', 'jodelt'];
+export const endings = ['während er seine Zähne putzt', 'während er Yoga macht', 'während er die Wäsche aufhängt', 'während er Hardware inspiziert', 'während er schläft', 'während er auf dem Mond fliegt', 'während er Kobolde jagd', 'während er verträumt in die Wolken blickt', 'während er druch einen düsteren Wald rennt']
 
 
 export interface Post {
@@ -92,7 +92,9 @@ export function getNewestPosts(client: Client) {
         return getDiff(result[0], result[1])
     })
 
+
     diff.then((result) => {
+
         if (result.length == 0) {
             return;
         }
@@ -115,6 +117,7 @@ function createGarryEmbed(post: Post) {
     message.setTitle(post.date)
     message.setFooter('Scraped ')
     message.setTimestamp()
+    return message;
 }
 
 
