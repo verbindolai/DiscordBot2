@@ -1,4 +1,10 @@
-export function callWithProbability(probability: number, callback: Function): boolean {
+/**
+ * Returns true with the given Probability. Optional calls a Callback function when returning true.
+ * @param probability float between 0 and 1
+ * @param callback callback to get calles with the given probability
+ * @returns 
+ */
+export function probability(probability: number, callback?: Function): boolean {
     if (probability > 1) {
         probability = 1;
     } else if (probability < 0) {
@@ -6,7 +12,9 @@ export function callWithProbability(probability: number, callback: Function): bo
     }
     const random = Math.floor(Math.random() * 100)
     if (random < probability * 100) {
-        callback();
+        if (callback) {
+            callback();
+        }
         return true;
     }
     return false;

@@ -1,7 +1,7 @@
 import { Client, GuildMember, Message, Snowflake } from 'discord.js';
 import { commandInterface } from '../interface/commandInterface';
 import { letOut, lockUp } from '../lib/prison';
-import { callWithProbability } from '../lib/probability';
+import { probability } from '../lib/probability';
 
 class Roulette implements commandInterface {
     name: string = "roulette";
@@ -22,7 +22,7 @@ class Roulette implements commandInterface {
             const size = vChannelOfMember.members.size;
             let winningNames = "";
             vChannelOfMember.members.forEach((guildMember: GuildMember) => {
-                if (callWithProbability(this.prisonProbability, () => lockUp(guildMember))) {
+                if (probability(this.prisonProbability, () => lockUp(guildMember))) {
                     this.reduceProbability(size);
                     if (guildMember.nickname != null) {
                         winningNames += guildMember.nickname;
